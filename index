@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picatti Brothers Apparel Dashboard</title>
+<meta name="theme-color" content="#1f2937">
+<style>
+:root { --bg:#f5f7fb; --card:#fff; --line:#dbe3ee; --text:#0f172a; --muted:#64748b; --brand:#1f2937; --brand2:#374151; --accent:#f59e0b; --accent2:#0f766e; --danger:#b42318; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial,Helvetica,sans-serif; background:var(--bg); color:var(--text); }
+.topbar { background:linear-gradient(180deg,var(--brand),var(--brand2)); color:#fff; padding:14px 18px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,.2); }
+.topbar-inner { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; max-width:1400px; margin:0 auto; }
+.brand { display:flex; align-items:center; gap:14px; }
+.brand img { height:54px; width:auto; border-radius:8px; background:#fff; padding:4px; }
+.brand h1 { margin:0; font-size:22px; }
+.brand p { margin:4px 0 0; font-size:13px; color:#dbe3ef; }
+.wrap { max-width:1400px; margin:0 auto; padding:16px; }
+.banner { background:#fff7e6; border:1px solid #f2d38f; border-radius:14px; padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; }
+.pill { display:inline-block; background:#eef2ff; color:#3730a3; border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700; }
+.mode-demo { background:#fff1f2; border-color:#fecdd3; color:#9f1239; }
+.tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.tabbtn { border:1px solid var(--line); background:#fff; border-radius:12px; padding:10px 14px; cursor:pointer; font-weight:700; }
+.tabbtn.active { background:var(--accent); border-color:var(--accent); color:#111827; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; box-shadow:0 2px 10px rgba(0,0,0,.04); }
+.card h2, .card h3 { margin:0 0 8px; }
+.sub { font-size:13px; color:var(--muted); margin-bottom:12px; }
+.row { display:grid; grid-template-columns:repeat(12,1fr); gap:10px; }
+.col-12 { grid-column:span 12; } .col-8 { grid-column:span 8; } .col-6 { grid-column:span 6; } .col-4 { grid-column:span 4; } .col-3 { grid-column:span 3; } .col-2 { grid-column:span 2; }
+label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em; }
+input, select, button, textarea { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font-size:14px; }
+button { cursor:pointer; font-weight:700; }
+.btn { background:var(--accent); border:none; color:#111827; }
+.btn-secondary { background:#f8fafc; }
+.btn-good { background:#ecfdf3; color:var(--accent2); }
+.btn-danger { background:#fff1f2; color:var(--danger); }
+.btn-inline { width:auto; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:14px; }
+.product { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff; }
+.product img { width:100%; height:250px; object-fit:contain; background:#f8fafc; display:block; }
+.product-body { padding:12px; }
+.product h3 { margin:0 0 4px; font-size:17px; min-height:42px; }
+.sku { color:var(--muted); font-size:12px; font-weight:700; }
+.price { font-size:20px; font-weight:800; margin:8px 0 10px; }
+.layout { display:grid; grid-template-columns:1.15fr .85fr; gap:16px; }
+.sticky { position:sticky; top:88px; }
+.summarygrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:12px; }
+.stat { border:1px solid var(--line); border-radius:12px; padding:12px; background:#fbfcfe; }
+.stat .n { font-size:24px; font-weight:800; }
+.notice { padding:10px 12px; border-radius:10px; margin:10px 0; font-size:13px; }
+.warn { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; }
+.good { background:#ecfdf3; border:1px solid #a7f3d0; color:#065f46; }
+.cart-line { border:1px solid var(--line); border-radius:12px; padding:10px; margin-bottom:8px; background:#fcfcfd; }
+.cart-line strong { display:block; }
+.right { float:right; }
+.section-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; margin-bottom:10px; }
+.section-actions > * { width:auto; }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:10px 8px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { font-size:12px; text-transform:uppercase; color:var(--muted); }
+.scroll { max-height:380px; overflow:auto; }
+.sheet { border:1px solid var(--line); border-radius:14px; padding:14px; background:#fff; }
+.order-card { border:1px solid var(--line); border-radius:12px; padding:12px; background:#fbfdff; margin-bottom:10px; }
+.hidden { display:none !important; }
+.tiny { font-size:12px; } .muted { color:var(--muted); }
+.filterbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.filterbar input, .filterbar select { max-width:240px; }
+@media (max-width: 980px) {
+  .layout { grid-template-columns:1fr; }
+  .sticky { position:static; }
+  .summarygrid { grid-template-columns:1fr 1fr; }
+  .col-8, .col-6, .col-4, .col-3, .col-2 { grid-column:span 12; }
+}
+@media print {
+  .topbar, .banner, .tabs, .no-print { display:none !important; }
+  body { background:#fff; }
+  .card { box-shadow:none; border:none; padding:0; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <img src="assets/picatti-logo.png" alt="Picatti Brothers">
+      <div>
+        <h1>Picatti Brothers Apparel System</h1>
+        <p>Employee ordering plus a true employer dashboard with vendor totals, pull summaries, and employee packing slips.</p>
+      </div>
+    </div>
+    <div id="modeBadge" class="pill">Starting…</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="banner">
+    <div><strong>Employees must submit exactly 7 items.</strong> Mixed sizes across shirts, hoodies, and jackets are supported. Men’s, women’s, and unisex filters are built in.</div>
+    <span class="pill">Central dashboard ready</span>
+  </div>
+
+  <div class="tabs no-print">
+    <button class="tabbtn active" data-tab="employeeTab" onclick="switchTab('employeeTab', this)">Employee Ordering</button>
+    <button class="tabbtn" data-tab="dashboardTab" onclick="switchTab('dashboardTab', this)">Employer Dashboard</button>
+    <button class="tabbtn" data-tab="setupTab" onclick="switchTab('setupTab', this)">Firebase Setup</button>
+  </div>
+
+  <div id="employeeTab">
+    <div class="layout">
+      <div>
+        <div class="card">
+          <h2>Shop Apparel</h2>
+          <div class="sub">Employees enter their name, choose items, select color and size per item, and submit exactly 7 items.</div>
+          <div class="row">
+            <div class="col-6"><label>Employee Name</label><input id="employeeName" placeholder="Karen Smith"></div>
+            <div class="col-6"><label>Department / Team</label><input id="employeeDept" placeholder="Office, Field, Sales"></div>
+          </div>
+          <div class="filterbar" style="margin-top:12px;">
+            <input id="searchBox" placeholder="Search apparel" oninput="renderProducts()">
+            <select id="audienceFilter" onchange="renderProducts()">
+              <option value="">All fits</option>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+            <select id="categoryFilter" onchange="renderProducts()"><option value="">All categories</option></select>
+          </div>
+          <div id="shoppingNotice" class="notice warn">Enter employee name first, then select exactly 7 items.</div>
+          <div id="productGrid" class="grid"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sticky">
+          <div class="card">
+            <h2>Employee Cart</h2>
+            <div class="sub">Employee price is always $0. Vendor cost is tracked for the employer dashboard.</div>
+            <div class="summarygrid">
+              <div class="stat"><div class="tiny muted">Items in Cart</div><div class="n" id="cartPieces">0</div></div>
+              <div class="stat"><div class="tiny muted">Items Still Needed</div><div class="n" id="piecesLeft">7</div></div>
+              <div class="stat"><div class="tiny muted">Vendor Cost</div><div class="n" id="cartCost">$0.00</div></div>
+              <div class="stat"><div class="tiny muted">Order Rule</div><div class="n tiny" style="font-size:18px;">Exactly 7</div></div>
+            </div>
+            <div id="cartLines"></div>
+            <div class="section-actions no-print">
+              <button class="btn-good btn-inline" onclick="submitCart()">Submit Employee Order</button>
+              <button class="btn-danger btn-inline" onclick="clearCart()">Clear Cart</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px;">
+            <h2>How this works</h2>
+            <div class="sub">This version supports a real employer dashboard when Firebase is connected.</div>
+            <div class="tiny muted">
+              1. Employees submit orders from their phones.<br>
+              2. Orders sync into one shared database.<br>
+              3. Employer dashboard shows vendor totals and printable packing reports.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboardTab" class="hidden">
+    <div class="card">
+      <h2>Employer Dashboard</h2>
+      <div class="sub">Live vendor totals, all employee orders, print tools, and CSV exports.</div>
+      <div class="summarygrid">
+        <div class="stat"><div class="tiny muted">Employees</div><div class="n" id="sumEmployees">0</div></div>
+        <div class="stat"><div class="tiny muted">Orders</div><div class="n" id="sumOrders">0</div></div>
+        <div class="stat"><div class="tiny muted">Total Items</div><div class="n" id="sumPieces">0</div></div>
+        <div class="stat"><div class="tiny muted">Vendor Total</div><div class="n" id="sumCost">$0.00</div></div>
+      </div>
+
+      <div class="section-actions no-print">
+        <button class="btn-secondary btn-inline" onclick="exportVendorTotals()">Export Vendor Totals CSV</button>
+        <button class="btn-secondary btn-inline" onclick="exportEmployeeOrders()">Export Employee Orders CSV</button>
+        <button class="btn-secondary btn-inline" onclick="printAllEmployeeSheets()">Print All Employee Sheets</button>
+        <button class="btn-secondary btn-inline" onclick="printPullSummary()">Print Pull Summary</button>
+        <button class="btn-danger btn-inline" onclick="clearAllOrders()">Clear All Orders</button>
+      </div>
+
+      <div class="layout">
+        <div>
+          <div class="sheet">
+            <strong>Vendor Order Totals</strong>
+            <div class="tiny muted" style="margin:4px 0 10px;">Grouped by item, color, size, and total quantity.</div>
+            <div class="scroll">
+              <table id="vendorTotalsTable">
+                <thead><tr><th>SKU</th><th>Item</th><th>Color</th><th>Size</th><th>Qty</th><th>Cost</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="sheet">
+            <strong>Employee Orders</strong>
+            <div class="tiny muted" style="margin:4px 0 10px;">Every order visible in one place for the employer.</div>
+            <div id="ordersList" class="scroll"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="setupTab" class="hidden">
+    <div class="card">
+      <h2>Firebase Setup</h2>
+      <div class="sub">The app works in demo mode immediately. To make it multi-user and shared across employee phones, paste your Firebase web config below and deploy to Firebase Hosting.</div>
+      <div class="row">
+        <div class="col-12">
+          <label>Firebase Web Config JSON</label>
+          <textarea id="firebaseConfigInput" rows="8" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
+        </div>
+      </div>
+      <div class="section-actions">
+        <button class="btn btn-inline" onclick="saveFirebaseConfig()">Save Firebase Config</button>
+        <button class="btn-secondary btn-inline" onclick="loadSavedFirebaseConfig()">Reload Saved Config</button>
+      </div>
+      <div id="setupStatus" class="notice warn">No Firebase config saved yet. The app is currently in single-device demo mode.</div>
+      <div class="tiny muted">
+        Once Firebase is connected, employee orders sync live into one employer dashboard. Deploy these files with Firebase Hosting for a real shared link.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.PRODUCTS = [{"id":"3211","sku":"3211","name":"Sierra Pacific Denim Long Sleeve Shirt","cost":27.22,"sizes":["S","M","L","XL","2XL","3XL","4XL","5XL","6XL"],"category":"Shirts","audience":"Unisex","colors":[{"name":"Black Denim","image":"assets/3211-black-denim.png"},{"name":"Dark Denim","image":"assets/3211-dark-denim.png"},{"name":"Light Denim","image":"assets/3211-light-denim.png"}]},{"id":"637167","sku":"637167","name":"Nike Dri-FIT Vertical Mesh Polo","cost":48.0,"sizes":["XS","S","M","L","XL","2XL","3XL","4XL"],"category":"Polos","audience":"Men","colors":[{"name":"Action Green","image":"assets/637167-action-green.png"},{"name":"Black","image":"assets/637167-black.png"},{"name":"Brisk Blue","image":"assets/637167-brisk-blue.png"},{"name":"Cool Grey","image":"assets/637167-cool-grey.png"},{"name":"Marine","image":"assets/637167-marine.png"},{"name":"Volt","image":"assets/637167-volt.png"}]},{"id":"838965","sku":"838965","name":"Nike Dri-FIT Crosshatch Polo","cost":62.0,"sizes":["XS","S","M","L","XL","2XL","3XL","4XL"],"category":"Polos","audience":"Men","colors":[{"name":"Anthracite / Black","image":"assets/838965-anthracite-black.png"},{"name":"Cool Grey / Anthracite","image":"assets/838965-cool-grey-anthracite.png"},{"name":"Old Royal / Marine","image":"assets/838965-old-royal-marine.png"}]},{"id":"CT102788","sku":"CT102788","name":"Carhartt Women's Clarksburg Full-Zip Hoodie","cost":55.0,"sizes":["XS","S","M","L","XL","2XL"],"category":"Women's Outerwear","audience":"Women","colors":[{"name":"Black","image":"assets/ct102788-black.png"},{"name":"Carbon Heather","image":"assets/ct102788-carbon-heather.png"},{"name":"Navy","image":"assets/ct102788-navy.png"}]},{"id":"CT104314","sku":"CT104314","name":"Carhartt Women's Gilliam Jacket","cost":100.0,"sizes":["XS","S","M","L","XL","2XL"],"category":"Women's Outerwear","audience":"Women","colors":[{"name":"Black","image":"assets/ct104314-black.png"},{"name":"Shadow Grey","image":"assets/ct104314-shadow-grey.png"}]},{"id":"CT106674","sku":"CT106674","name":"Carhartt Duck Traditional Coat","cost":130.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"Outerwear","audience":"Unisex","colors":[{"name":"Black","image":"assets/ct106674-black.png"},{"name":"Carhartt Brown","image":"assets/ct106674-brown.png"},{"name":"Dark Navy","image":"assets/ct106674-dark-navy.png"}]},{"id":"CT106688","sku":"CT106688","name":"Carhartt Rugged Professional Series Short Sleeve Shirt","cost":45.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"Shirts","audience":"Unisex","colors":[{"name":"Black","image":"assets/ct106688-black.png"},{"name":"Dark Khaki","image":"assets/ct106688-dark-khaki.png"},{"name":"Navy","image":"assets/ct106688-navy.png"}]},{"id":"CT106689","sku":"CT106689","name":"Carhartt Rugged Professional Series Long Sleeve Shirt","cost":50.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"Shirts","audience":"Unisex","colors":[{"name":"Black","image":"assets/ct106689-black.png"},{"name":"Dark Khaki","image":"assets/ct106689-dark-khaki.png"},{"name":"Navy","image":"assets/ct106689-navy.png"}]},{"id":"CTK87","sku":"CTK87","name":"Carhartt Workwear Pocket Short Sleeve T-Shirt","cost":20.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"T-Shirts","audience":"Unisex","colors":[{"name":"Black","image":"assets/ctk87-black.png"},{"name":"Brite Lime","image":"assets/ctk87-brite-lime.png"},{"name":"Brite Orange","image":"assets/ctk87-brite-orange.png"},{"name":"Carbon Heather","image":"assets/ctk87-carbon-heather.png"},{"name":"Heather Grey","image":"assets/ctk87-heather-grey.png"},{"name":"Navy","image":"assets/ctk87-navy.png"}]},{"id":"CTK121","sku":"CTK121","name":"Carhartt Midweight Hooded Sweatshirt","cost":50.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"Outerwear","audience":"Unisex","colors":[{"name":"Black","image":"assets/ctk121-black.png"},{"name":"Brite Lime","image":"assets/ctk121-brite-lime.png"},{"name":"Brite Orange","image":"assets/ctk121-brite-orange.png"},{"name":"Carbon Heather","image":"assets/ctk121-carbon-heather.png"},{"name":"Heather Grey","image":"assets/ctk121-heather-grey.png"},{"name":"Moss","image":"assets/ctk121-moss.png"},{"name":"New Navy","image":"assets/ctk121-new-navy.png"}]},{"id":"CTK126","sku":"CTK126","name":"Carhartt Workwear Pocket Long Sleeve T-Shirt","cost":25.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"T-Shirts","audience":"Unisex","colors":[{"name":"Black","image":"assets/ctk126-black.png"},{"name":"Navy","image":"assets/ctk126-navy.png"},{"name":"Heather Grey","image":"assets/ctk126-heather-grey.png"},{"name":"Brite Lime","image":"assets/ctk126-brite-lime.png"},{"name":"Brite Orange","image":"assets/ctk126-brite-orange.png"},{"name":"Carbon Heather","image":"assets/ctk126-carbon-heather.png"}]},{"id":"N3409","sku":"N3409","name":"Cooling Performance Long Sleeve Hooded Tee","cost":24.0,"sizes":["S","M","L","XL","2XL","3XL","4XL"],"category":"Performance Workwear","audience":"Unisex","colors":[{"name":"Black","image":"assets/n3409-black.png"},{"name":"Graphite","image":"assets/n3409-graphite.png"},{"name":"Navy","image":"assets/n3409-navy.png"},{"name":"Safety Orange","image":"assets/n3409-safety-orange.png"},{"name":"Safety Yellow","image":"assets/n3409-safety-yellow.png"},{"name":"Silver","image":"assets/n3409-silver.png"}]},{"id":"NKDC2109","sku":"NKDC2109","name":"Nike Dri-FIT Vapor Space Dyed Polo","cost":66.5,"sizes":["XS","S","M","L","XL","2XL","3XL","4XL"],"category":"Premium Polos","audience":"Men","colors":[{"name":"Anthracite","image":"assets/nkdc2109-anthracite.png"},{"name":"Navy","image":"assets/nkdc2109-navy.png"}]},{"id":"NKDX6688","sku":"NKDX6688","name":"Nike Vapor Dash Polo","cost":68.0,"sizes":["XS","S","M","L","XL","2XL","3XL","4XL"],"category":"Premium Polos","audience":"Men","colors":[{"name":"Anthracite","image":"assets/nkdx6688-anthracite.png"},{"name":"Cool Grey","image":"assets/nkdx6688-cool-grey.png"},{"name":"Valor Blue","image":"assets/nkdx6688-valor-blue.png"}]},{"id":"RU400","sku":"RU400","name":"Russell Outdoors Realtree Pullover Hoodie","cost":47.98,"sizes":["XS","S","M","L","XL","2XL","3XL","4XL"],"category":"Specialty","audience":"Unisex","colors":[{"name":"Realtree Edge","image":"assets/ru400-realtree-edge.png"}]},{"id":"TM1MY403","sku":"TM1MY403","name":"TravisMathew Oceanside Geo Polo","cost":85.0,"sizes":["S","M","L","XL","2XL","3XL"],"category":"Executive","audience":"Men","colors":[{"name":"Black / Aegean Blue","image":"assets/tm1my403-black-aegean-blue.png"},{"name":"Quiet Shade Grey Heather / Dark Grey","image":"assets/tm1my403-grey-dark-grey.png"}]}];
+window.APP_CONFIG = { firebaseConfig: null };
+</script>
+
+<script type="module">
+const FirebaseCDN = {
+  app: 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js',
+  firestore: 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'
+};
+
+const PRODUCTS = window.PRODUCTS;
+const DEMO_KEY = 'picatti_demo_orders_v1';
+const FIREBASE_KEY = 'picatti_firebase_config_v1';
+
+let state = { mode: 'demo', currentCart: [], orders: [], db: null, unsubscribe: null };
+
+function money(n) { return '$' + Number(n || 0).toFixed(2); }
+function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]); }
+function switchTab(id, btn) {
+  for (const el of document.querySelectorAll('.tabbtn')) el.classList.remove('active');
+  if (btn) btn.classList.add('active');
+  for (const el of ['employeeTab','dashboardTab','setupTab']) {
+    document.getElementById(el).classList.toggle('hidden', el !== id);
+  }
+}
+window.switchTab = switchTab;
+
+function savedDemoOrders() { try { return JSON.parse(localStorage.getItem(DEMO_KEY) || '[]'); } catch { return []; } }
+function saveDemoOrders() { localStorage.setItem(DEMO_KEY, JSON.stringify(state.orders)); }
+function getSavedFirebaseConfig() {
+  try { const raw = localStorage.getItem(FIREBASE_KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
+}
+function setModeBadge() {
+  const el = document.getElementById('modeBadge');
+  if (state.mode === 'firebase') {
+    el.className = 'pill';
+    el.textContent = 'Shared Firebase mode';
+  } else {
+    el.className = 'pill mode-demo';
+    el.textContent = 'Demo mode: single device only';
+  }
+}
+function populateCategoryFilter() {
+  const categories = [...new Set(PRODUCTS.map(p => p.category))].sort();
+  const sel = document.getElementById('categoryFilter');
+  sel.innerHTML = '<option value="">All categories</option>' + categories.map(c => `<option>${escapeHtml(c)}</option>`).join('');
+}
+function renderProducts() {
+  const grid = document.getElementById('productGrid');
+  const search = document.getElementById('searchBox').value.trim().toLowerCase();
+  const audience = document.getElementById('audienceFilter').value;
+  const category = document.getElementById('categoryFilter').value;
+  let items = PRODUCTS.filter(p => {
+    const hitSearch = !search || (p.name + ' ' + p.sku + ' ' + p.category + ' ' + p.audience).toLowerCase().includes(search);
+    const hitAudience = !audience || p.audience === audience;
+    const hitCategory = !category || p.category === category;
+    return hitSearch && hitAudience && hitCategory;
+  });
+  grid.innerHTML = '';
+  if (!items.length) { grid.innerHTML = '<div class="notice warn">No garments matched your filters.</div>'; return; }
+  items.forEach(p => {
+    const first = p.colors[0];
+    const card = document.createElement('div');
+    card.className = 'product';
+    card.innerHTML = `
+      <img id="img_${p.id}" src="${first.image}" alt="${escapeHtml(p.name)}">
+      <div class="product-body">
+        <div class="sku">${escapeHtml(p.sku)} • ${escapeHtml(p.category)} • ${escapeHtml(p.audience)}</div>
+        <h3>${escapeHtml(p.name)}</h3>
+        <div class="tiny muted">Employee price: $0.00</div>
+        <div class="price">Vendor cost: ${money(p.cost)}</div>
+        <label>Color</label>
+        <select id="color_${p.id}" onchange="window.changeProductImage('${p.id}')">
+          ${p.colors.map((c, i) => `<option value="${i}">${escapeHtml(c.name)}</option>`).join('')}
+        </select>
+        <label style="margin-top:8px;">Size</label>
+        <select id="size_${p.id}">
+          ${p.sizes.map(s => `<option>${escapeHtml(s)}</option>`).join('')}
+        </select>
+        <label style="margin-top:8px;">Quantity</label>
+        <select id="qty_${p.id}">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        <button class="btn" style="margin-top:10px;" onclick="window.addToCart('${p.id}')">Add to Cart</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+window.changeProductImage = function(productId) {
+  const p = PRODUCTS.find(x => x.id === productId);
+  const idx = Number(document.getElementById('color_' + productId).value || 0);
+  document.getElementById('img_' + productId).src = p.colors[idx].image;
+}
+function getCartCount() { return state.currentCart.reduce((a, b) => a + Number(b.qty), 0); }
+window.addToCart = function(productId) {
+  const employeeName = document.getElementById('employeeName').value.trim();
+  const dept = document.getElementById('employeeDept').value.trim();
+  if (!employeeName) { alert('Please enter employee name first.'); return; }
+  const p = PRODUCTS.find(x => x.id === productId);
+  const qty = Number(document.getElementById('qty_' + productId).value || 1);
+  if (getCartCount() + qty > 7) { alert('This employee can only select 7 total items.'); return; }
+  const colorIdx = Number(document.getElementById('color_' + productId).value || 0);
+  const color = p.colors[colorIdx].name;
+  const size = document.getElementById('size_' + productId).value;
+  state.currentCart.push({ id: crypto.randomUUID(), productId: p.id, sku: p.sku, item: p.name, category: p.category, audience: p.audience, employee: employeeName, dept, color, size, qty, cost: p.cost });
+  renderCart();
+}
+window.clearCart = function() { state.currentCart = []; renderCart(); }
+window.submitCart = async function() {
+  const employeeName = document.getElementById('employeeName').value.trim();
+  const dept = document.getElementById('employeeDept').value.trim();
+  if (!employeeName) { alert('Enter employee name.'); return; }
+  if (!state.currentCart.length) { alert('Cart is empty.'); return; }
+  const count = getCartCount();
+  if (count !== 7) { alert('Each employee must submit exactly 7 items.'); return; }
+  const order = { employee: employeeName, dept, itemCount: count, totalCost: state.currentCart.reduce((a, b) => a + Number(b.qty) * Number(b.cost), 0), items: state.currentCart, submittedAt: new Date().toISOString() };
+  try {
+    if (state.mode === 'firebase' && state.db) {
+      const { collection, addDoc } = await import(FirebaseCDN.firestore);
+      await addDoc(collection(state.db, 'orders'), order);
+    } else {
+      state.orders.push({ id: crypto.randomUUID(), ...order });
+      saveDemoOrders();
+      updateDashboard();
+    }
+    state.currentCart = [];
+    renderCart();
+    alert('Order submitted.');
+    switchTab('dashboardTab', document.querySelector('[data-tab="dashboardTab"]'));
+  } catch (e) {
+    console.error(e);
+    alert('Could not submit the order.');
+  }
+}
+function renderCart() {
+  const wrap = document.getElementById('cartLines');
+  const count = getCartCount();
+  const total = state.currentCart.reduce((a, b) => a + Number(b.qty) * Number(b.cost), 0);
+  document.getElementById('cartPieces').textContent = count;
+  document.getElementById('piecesLeft').textContent = 7 - count;
+  document.getElementById('cartCost').textContent = money(total);
+  const notice = document.getElementById('shoppingNotice');
+  if (count === 7) { notice.className = 'notice good'; notice.textContent = 'This employee has exactly 7 items selected and can submit.'; }
+  else { notice.className = 'notice warn'; notice.textContent = `This employee still needs ${7 - count} item(s) before submitting.`; }
+  wrap.innerHTML = '';
+  if (!state.currentCart.length) { wrap.innerHTML = '<div class="notice warn">Cart is empty.</div>'; return; }
+  state.currentCart.forEach(line => {
+    const div = document.createElement('div');
+    div.className = 'cart-line';
+    div.innerHTML = `<strong>${escapeHtml(line.item)} <span class="right">${money(line.qty * line.cost)}</span></strong><div class="tiny muted">${escapeHtml(line.color)} • Size ${escapeHtml(line.size)} • Qty ${line.qty}</div><button class="btn-danger btn-inline" style="margin-top:8px;" onclick="window.removeCartLine('${line.id}')">Remove</button>`;
+    wrap.appendChild(div);
+  });
+}
+window.removeCartLine = function(id) { state.currentCart = state.currentCart.filter(x => x.id !== id); renderCart(); }
+function allOrderRows() {
+  const rows = [];
+  state.orders.forEach(order => { (order.items || []).forEach(item => rows.push(item)); });
+  return rows;
+}
+function groupedVendorTotals() {
+  const grouped = {};
+  allOrderRows().forEach(r => {
+    const key = [r.sku, r.item, r.color, r.size, r.cost].join('||');
+    if (!grouped[key]) grouped[key] = { sku:r.sku, item:r.item, color:r.color, size:r.size, cost:r.cost, qty:0 };
+    grouped[key].qty += Number(r.qty);
+  });
+  return Object.values(grouped).sort((a,b)=>(a.item+a.color+a.size).localeCompare(b.item+b.color+b.size));
+}
+function updateDashboard() {
+  const orders = state.orders;
+  const rows = allOrderRows();
+  const employees = [...new Set(orders.map(o => o.employee))];
+  document.getElementById('sumEmployees').textContent = employees.length;
+  document.getElementById('sumOrders').textContent = orders.length;
+  document.getElementById('sumPieces').textContent = rows.reduce((a,b)=>a+Number(b.qty),0);
+  document.getElementById('sumCost').textContent = money(rows.reduce((a,b)=>a+Number(b.qty)*Number(b.cost),0));
+  const body = document.querySelector('#vendorTotalsTable tbody');
+  body.innerHTML = '';
+  groupedVendorTotals().forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${escapeHtml(r.sku)}</td><td>${escapeHtml(r.item)}</td><td>${escapeHtml(r.color)}</td><td>${escapeHtml(r.size)}</td><td>${r.qty}</td><td>${money(r.qty * r.cost)}</td>`;
+    body.appendChild(tr);
+  });
+  const list = document.getElementById('ordersList');
+  list.innerHTML = '';
+  if (!orders.length) { list.innerHTML = '<div class="notice warn">No employee orders yet.</div>'; return; }
+  orders.slice().sort((a,b)=>(b.submittedAt||'').localeCompare(a.submittedAt||'')).forEach(order => {
+    const div = document.createElement('div');
+    div.className = 'order-card';
+    div.innerHTML = `<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;"><div><strong>${escapeHtml(order.employee)}</strong> • ${escapeHtml(order.dept || '-')}</div><div><strong>${order.itemCount}</strong> items • <strong>${money(order.totalCost)}</strong></div></div><div class="tiny muted" style="margin-top:6px;">${new Date(order.submittedAt).toLocaleString()}</div><div class="tiny" style="margin-top:8px;">${(order.items||[]).map(i => `${escapeHtml(i.sku)} ${escapeHtml(i.item)} / ${escapeHtml(i.color)} / ${escapeHtml(i.size)} x${i.qty}`).join('<br>')}</div>`;
+    list.appendChild(div);
+  });
+}
+function csv(rows) {
+  return rows.map(r => r.map(cell => {
+    const s = String(cell ?? '');
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }).join(',')).join('\n');
+}
+function download(name, content, mime='text/csv;charset=utf-8;') {
+  const blob = new Blob([content], { type: mime });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+}
+window.exportVendorTotals = function() {
+  const rows = [['SKU','Item','Color','Size','Qty','Unit Cost','Extended Cost']];
+  groupedVendorTotals().forEach(r => rows.push([r.sku, r.item, r.color, r.size, r.qty, r.cost, (r.qty*r.cost).toFixed(2)]));
+  download('vendor_totals.csv', csv(rows));
+}
+window.exportEmployeeOrders = function() {
+  const rows = [['Employee','Department','SKU','Item','Color','Size','Qty','Unit Cost','Extended Cost','Submitted At']];
+  state.orders.forEach(order => (order.items||[]).forEach(i => rows.push([order.employee, order.dept || '', i.sku, i.item, i.color, i.size, i.qty, i.cost, (i.qty*i.cost).toFixed(2), order.submittedAt])));
+  download('employee_orders.csv', csv(rows));
+}
+function employeeSheetHtml(order) {
+  return `<div style="page-break-after:always;padding:18px;font-family:Arial,Helvetica,sans-serif;"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:14px;"><div><div style="font-size:24px;font-weight:800;">Picatti Brothers Order Sheet</div><div style="margin-top:6px;font-size:18px;font-weight:700;">${escapeHtml(order.employee)}</div><div style="color:#555;">Department: ${escapeHtml(order.dept || '-')}</div></div><div style="text-align:right;"><div><strong>Items:</strong> ${order.itemCount}</div><div><strong>Vendor Cost:</strong> ${money(order.totalCost)}</div></div></div><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">SKU</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Item</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Color</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Size</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Qty</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Pulled</th></tr></thead><tbody>${(order.items||[]).map(i => `<tr><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(i.sku)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(i.item)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(i.color)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(i.size)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${i.qty}</td><td style="padding:8px;border-bottom:1px solid #ddd;">____</td></tr>`).join('')}</tbody></table></div>`;
+}
+window.printAllEmployeeSheets = function() {
+  const html = state.orders.length ? state.orders.map(employeeSheetHtml).join('') : '<div style="padding:20px;font-family:Arial;">No orders yet.</div>';
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>Employee Sheets</title></head><body>${html}</body></html>`);
+  w.document.close(); w.focus(); w.print();
+}
+window.printPullSummary = function() {
+  const grouped = {};
+  allOrderRows().forEach(r => {
+    const key = [r.sku, r.item, r.color, r.size].join('||');
+    if (!grouped[key]) grouped[key] = { sku:r.sku, item:r.item, color:r.color, size:r.size, qty:0, employees:{} };
+    grouped[key].qty += Number(r.qty);
+    grouped[key].employees[r.employee] = (grouped[key].employees[r.employee] || 0) + Number(r.qty);
+  });
+  const rows = Object.values(grouped).sort((a,b)=>(a.item+a.color+a.size).localeCompare(b.item+b.color+b.size));
+  const html = rows.length ? `<div style="padding:18px;font-family:Arial,Helvetica,sans-serif;"><div style="font-size:24px;font-weight:800;margin-bottom:12px;">Picatti Brothers Pull Summary</div><div style="margin-bottom:14px;color:#555;">Use this when bulk inventory arrives and you need to stage items by SKU, color, and size.</div><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">SKU</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Item</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Color</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Size</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Total Qty</th><th style="text-align:left;border-bottom:1px solid #999;padding:8px;">Employees</th></tr></thead><tbody>${rows.map(r => `<tr><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(r.sku)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(r.item)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(r.color)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(r.size)}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${r.qty}</td><td style="padding:8px;border-bottom:1px solid #ddd;">${Object.entries(r.employees).map(([n,q]) => `${escapeHtml(n)} (${q})`).join(', ')}</td></tr>`).join('')}</tbody></table></div>` : '<div style="padding:20px;font-family:Arial;">No orders yet.</div>';
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>Pull Summary</title></head><body>${html}</body></html>`);
+  w.document.close(); w.focus(); w.print();
+}
+window.clearAllOrders = async function() {
+  if (!confirm('Clear all orders?')) return;
+  try {
+    if (state.mode === 'firebase' && state.db) {
+      const { collection, getDocs, deleteDoc, doc } = await import(FirebaseCDN.firestore);
+      const snap = await getDocs(collection(state.db, 'orders'));
+      for (const d of snap.docs) { await deleteDoc(doc(state.db, 'orders', d.id)); }
+    } else {
+      state.orders = [];
+      saveDemoOrders();
+      updateDashboard();
+    }
+  } catch (e) {
+    console.error(e);
+    alert('Could not clear orders.');
+  }
+}
+window.saveFirebaseConfig = async function() {
+  const raw = document.getElementById('firebaseConfigInput').value.trim();
+  if (!raw) {
+    localStorage.removeItem(FIREBASE_KEY);
+    document.getElementById('setupStatus').className = 'notice warn';
+    document.getElementById('setupStatus').textContent = 'Firebase config cleared. The app is now in single-device demo mode.';
+    await initDataMode();
+    return;
+  }
+  try {
+    const cfg = JSON.parse(raw);
+    localStorage.setItem(FIREBASE_KEY, JSON.stringify(cfg));
+    document.getElementById('setupStatus').className = 'notice good';
+    document.getElementById('setupStatus').textContent = 'Firebase config saved. Reloading shared mode now.';
+    await initDataMode();
+  } catch {
+    alert('Firebase config is not valid JSON.');
+  }
+}
+window.loadSavedFirebaseConfig = function() {
+  const cfg = getSavedFirebaseConfig();
+  document.getElementById('firebaseConfigInput').value = cfg ? JSON.stringify(cfg, null, 2) : '';
+}
+async function initFirebase(cfg) {
+  const firebaseAppMod = await import(FirebaseCDN.app);
+  const firestoreMod = await import(FirebaseCDN.firestore);
+  const app = firebaseAppMod.initializeApp(cfg);
+  const db = firestoreMod.getFirestore(app);
+  if (state.unsubscribe) state.unsubscribe();
+  state.db = db;
+  state.mode = 'firebase';
+  state.unsubscribe = firestoreMod.onSnapshot(firestoreMod.collection(db, 'orders'), snap => {
+    state.orders = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    updateDashboard();
+  });
+}
+async function initDataMode() {
+  const cfg = getSavedFirebaseConfig();
+  if (cfg && cfg.projectId && cfg.apiKey && cfg.appId) {
+    try {
+      await initFirebase(cfg);
+      document.getElementById('setupStatus').className = 'notice good';
+      document.getElementById('setupStatus').textContent = 'Firebase connected. Employee phones will share one employer dashboard.';
+    } catch (e) {
+      console.error(e);
+      state.mode = 'demo';
+      state.orders = savedDemoOrders();
+      document.getElementById('setupStatus').className = 'notice warn';
+      document.getElementById('setupStatus').textContent = 'Firebase could not connect. The app is in demo mode until the config is corrected.';
+      updateDashboard();
+    }
+  } else {
+    state.mode = 'demo';
+    state.orders = savedDemoOrders();
+    document.getElementById('setupStatus').className = 'notice warn';
+    document.getElementById('setupStatus').textContent = 'No Firebase config saved yet. The app is currently in single-device demo mode.';
+    updateDashboard();
+  }
+  setModeBadge();
+  window.loadSavedFirebaseConfig();
+}
+function init() {
+  populateCategoryFilter();
+  renderProducts();
+  renderCart();
+  updateDashboard();
+  setModeBadge();
+  initDataMode();
+}
+init();
+</script>
+</body>
+</html>
